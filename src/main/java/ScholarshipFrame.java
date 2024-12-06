@@ -81,7 +81,7 @@ public class ScholarshipFrame extends JFrame {
         gbc.gridx = 1;
         add(gpaField, gbc);
 
-        // 버튼: 장학금 신청
+        // 버튼: 장학금 찾기
         JButton applyButton = new JButton("장학금 찾기");
         gbc.gridx = 0;
         gbc.gridy = 7;
@@ -97,5 +97,56 @@ public class ScholarshipFrame extends JFrame {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         add(resultScrollPane, gbc);
+
+        // 프로그램 시작 시 자동으로 장학금 요건 불러오기
+        ScholarshipRequirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea);
+
+        loadButton.addActionListener(e -> ScholarshipRequirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea));
+
+        applyButton.addActionListener(e -> {
+            try {
+                int grade = Integer.parseInt(gradeField.getText());
+                int totalStudents = Integer.parseInt(totalStudentsField.getText());
+                int rank = Integer.parseInt(rankField.getText());
+                int creditsEarned = Integer.parseInt(creditsField.getText());
+                double gpa = Double.parseDouble(gpaField.getText());
+
+                // 입력값 검증
+                if (grade < 1 || grade > 4) {
+                    JOptionPane.showMessageDialog(this, "학년은 1에서 4 사이여야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (totalStudents <= 0) {
+                    JOptionPane.showMessageDialog(this, "학년 전체 인원은 1 이상이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (rank <= 0 || rank > totalStudents) {
+                    JOptionPane.showMessageDialog(this, "등수는 1 이상 " + totalStudents + " 이하이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (creditsEarned < 0) {
+                    JOptionPane.showMessageDialog(this, "취득한 학점은 0 이상이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (gpa < 0 || gpa > ScholarshipCalculator.MAX_GPA) {
+                    JOptionPane.showMessageDialog(this, "신청 평점은 0.0에서 " + ScholarshipCalculator.MAX_GPA + " 사이여야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String scholarshipType = "";
+                double scholarshipAmount = 0;
+
+                if (ScholarshipCalculator.isEligibleForScholarship(grade, creditsEarned, gpa)) {
+                    scholarshipAmount = ScholarshipCalculator.calculateScholarship(gpa, rank);
+                    scholarshipType = ScholarshipCalculator.determineScholarshipType(gpa);
+                    resultArea.setText("선발되었습니다! 장학금 종류: " + scholarshipType +
+                            "\n지급액: " + ScholarshipCalculator.formatAmount(scholarshipAmount) + "원");
+                } else {
+                    resultArea.setText("장학금 수혜 자격이 없습니다.");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "입력값이 잘못되었습니다. 다시 입력해주세요.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 }
