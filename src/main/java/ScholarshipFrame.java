@@ -112,44 +112,50 @@ public class ScholarshipFrame extends JFrame {
                 int grade = Integer.parseInt(gradeField.getText());
                 int totalStudents = Integer.parseInt(totalStudentsField.getText());
                 int rank = Integer.parseInt(rankField.getText());
-                int creditsEarned = Integer.parseInt(creditsField.getText());
+                double creditsEarned = Double.parseDouble(creditsField.getText()); // double로 유지
                 double gpa = Double.parseDouble(gpaField.getText());
 
                 // 입력값 검증
                 if (grade < 1 || grade > 4) {
-                    JOptionPane.showMessageDialog(this, "학년은 1에서 4 사이여야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("학년은 1에서 4 사이여야 합니다.");
                     return;
                 }
                 if (totalStudents <= 0) {
-                    JOptionPane.showMessageDialog(this, "학년 전체 인원은 1 이상이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("학년 전체 인원은 1 이상이어야 합니다.");
                     return;
                 }
                 if (rank <= 0 || rank > totalStudents) {
-                    JOptionPane.showMessageDialog(this, "등수는 1 이상 " + totalStudents + " 이하이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("등수는 1 이상 " + totalStudents + " 이하이어야 합니다.");
                     return;
                 }
-                if  (creditsEarned < 0 || creditsEarned > 4.5) {
-                    JOptionPane.showMessageDialog(this, "취득한 학점은 0 이상이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+
+                // 취득한 학점 검증 (여기서 최대 학점 수를 확인하는 방식으로 수정)
+                if (creditsEarned < 0) {
+                    showErrorDialog("취득한 학점은 0 이상이어야 합니다.");
                     return;
                 }
+                if (creditsEarned > 30) { // 학점의 최대값을 설정 (예: 30학점)
+                    showErrorDialog("취득한 학점은 최대 30학점이어야 합니다."); // 예시로 30으로 설정
+                    return;
+                }
+
+                // GPA 검증
                 if (gpa < 0 || gpa > ScholarshipCalculator.MAX_GPA) {
-                    JOptionPane.showMessageDialog(this, "신청 평점은 0.0에서 " + ScholarshipCalculator.MAX_GPA + " 사이여야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                    showErrorDialog("신청 평점은 0.0에서 " + ScholarshipCalculator.MAX_GPA + " 사이여야 합니다.");
                     return;
                 }
 
-                String scholarshipType = "";
-                double scholarshipAmount = 0;
-
-                if (ScholarshipCalculator.isEligibleForScholarship(grade, creditsEarned, gpa)) {
-                    scholarshipAmount = ScholarshipCalculator.calculateScholarship(gpa, rank);
-                    scholarshipType = ScholarshipCalculator.determineScholarshipType(gpa);
+                // 장학금 자격 검증 및 장학금 계산
+                if (ScholarshipCalculator.isEligibleForScholarship(grade, (int) creditsEarned, gpa)) {
+                    double scholarshipAmount = ScholarshipCalculator.calculateScholarship(gpa, rank, totalStudents);
+                    String scholarshipType = ScholarshipCalculator.determineScholarshipType(gpa, rank, totalStudents);
                     resultArea.setText("선발되었습니다! 장학금 종류: " + scholarshipType +
                             "\n지급액: " + ScholarshipCalculator.formatAmount(scholarshipAmount) + "원");
                 } else {
-                    resultArea.setText("장학금 수혜 자격이 없습니다.");
+                    showErrorDialog("장학금 수혜 자격이 없습니다.");
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "입력값이 잘못되었습니다. 다시 입력해주세요.", "입력 오류", JOptionPane.ERROR_MESSAGE);
+                showErrorDialog("입력값이 잘못되었습니다. 다시 입력해주세요.");
             }
         });
     }
