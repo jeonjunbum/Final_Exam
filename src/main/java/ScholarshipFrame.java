@@ -112,38 +112,15 @@ public class ScholarshipFrame extends JFrame {
                 int grade = Integer.parseInt(gradeField.getText());
                 int totalStudents = Integer.parseInt(totalStudentsField.getText());
                 int rank = Integer.parseInt(rankField.getText());
-                double creditsEarned = Double.parseDouble(creditsField.getText()); // double로 유지
+                double creditsEarned = Double.parseDouble(creditsField.getText());
                 double gpa = Double.parseDouble(gpaField.getText());
 
                 // 입력값 검증
-                if (grade < 1 || grade > 4) {
-                    showErrorDialog("학년은 1에서 4 사이여야 합니다.");
-                    return;
-                }
-                if (totalStudents <= 0) {
-                    showErrorDialog("학년 전체 인원은 1 이상이어야 합니다.");
-                    return;
-                }
-                if (rank <= 0 || rank > totalStudents) {
-                    showErrorDialog("등수는 1 이상 " + totalStudents + " 이하이어야 합니다.");
-                    return;
-                }
-
-                // 취득한 학점 검증 (여기서 최대 학점 수를 확인하는 방식으로 수정)
-                if (creditsEarned < 0) {
-                    showErrorDialog("취득한 학점은 0 이상이어야 합니다.");
-                    return;
-                }
-                if (creditsEarned > 30) { // 학점의 최대값을 설정 (예: 30학점)
-                    showErrorDialog("취득한 학점은 최대 30학점이어야 합니다."); // 예시로 30으로 설정
-                    return;
-                }
-
-                // GPA 검증
-                if (gpa < 0 || gpa > ScholarshipCalculator.MAX_GPA) {
-                    showErrorDialog("신청 평점은 0.0에서 " + ScholarshipCalculator.MAX_GPA + " 사이여야 합니다.");
-                    return;
-                }
+                InputValidator.validateGrade(grade);
+                InputValidator.validateTotalStudents(totalStudents);
+                InputValidator.validateRank(rank, totalStudents);
+                InputValidator.validateCredits(creditsEarned);
+                InputValidator.validateGPA(gpa);
 
                 // 장학금 자격 검증 및 장학금 계산
                 if (ScholarshipCalculator.isEligibleForScholarship(grade, (int) creditsEarned, gpa)) {
@@ -156,9 +133,12 @@ public class ScholarshipFrame extends JFrame {
                 }
             } catch (NumberFormatException ex) {
                 showErrorDialog("입력값이 잘못되었습니다. 다시 입력해주세요.");
+            } catch (IllegalArgumentException ex) {
+                showErrorDialog(ex.getMessage());
             }
         });
     }
+
     private void showErrorDialog(String message) {
         JDialog errorDialog = new JDialog(this, "입력 오류", true);
         errorDialog.setLayout(new BorderLayout());
@@ -173,5 +153,3 @@ public class ScholarshipFrame extends JFrame {
         errorDialog.setVisible(true);
     }
 }
-
-
