@@ -24,6 +24,8 @@ public class ScholarshipFrame extends JFrame {
 
         // 버튼: 장학금 요건 불러오기
         JButton loadButton = new JButton("장학금 요건 불러오기");
+        loadButton.setBackground(new Color(73, 106, 159)); // RGB 값을 사용하여 배경색 설정
+        loadButton.setForeground(Color.WHITE); // 글자색을 하얀색으로 설정
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -83,6 +85,8 @@ public class ScholarshipFrame extends JFrame {
 
         // 버튼: 장학금 찾기
         JButton applyButton = new JButton("장학금 찾기");
+        applyButton.setBackground(new Color(73, 106, 159)); // RGB 값을 사용하여 배경색 설정
+        applyButton.setForeground(Color.WHITE); // 글자색을 하얀색으로 설정
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.gridwidth = 2;
