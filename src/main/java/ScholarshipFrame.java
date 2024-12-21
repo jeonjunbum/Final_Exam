@@ -128,7 +128,7 @@ public class ScholarshipFrame extends JFrame {
                     JOptionPane.showMessageDialog(this, "등수는 1 이상 " + totalStudents + " 이하이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (creditsEarned < 0) {
+                if  (creditsEarned < 0 || creditsEarned > 4.5) {
                     JOptionPane.showMessageDialog(this, "취득한 학점은 0 이상이어야 합니다.", "입력 오류", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -153,4 +153,19 @@ public class ScholarshipFrame extends JFrame {
             }
         });
     }
+    private void showErrorDialog(String message) {
+        JDialog errorDialog = new JDialog(this, "입력 오류", true);
+        errorDialog.setLayout(new BorderLayout());
+        errorDialog.add(new JLabel(message), BorderLayout.CENTER);
+
+        JButton okButton = new JButton("확인");
+        okButton.addActionListener(e -> errorDialog.dispose());
+        errorDialog.add(okButton, BorderLayout.SOUTH);
+
+        errorDialog.setSize(300, 150);
+        errorDialog.setLocationRelativeTo(this);
+        errorDialog.setVisible(true);
+    }
 }
+
+
