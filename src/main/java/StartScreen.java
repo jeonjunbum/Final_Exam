@@ -27,8 +27,12 @@ public class StartScreen extends JFrame {
         startButton.setBorderPainted(false); // 버튼 테두리 제거
         startButton.setFocusPainted(false); // 버튼 클릭 시 테두리 제거
         startButton.addActionListener(e -> {
+            ScholarshipCalculator calculator = new ScholarshipCalculator();
+            InputValidator validator = new InputValidator();
+            ScholarshipRequirementsLoader requirementsLoader = new ScholarshipRequirementsLoader();
+
             // ScholarshipFrame 창 열기
-            ScholarshipFrame scholarshipFrame = new ScholarshipFrame();
+            ScholarshipFrame scholarshipFrame = new ScholarshipFrame(calculator, validator, requirementsLoader);
             scholarshipFrame.setVisible(true);
             this.dispose(); // 시작 화면 닫기
         });
