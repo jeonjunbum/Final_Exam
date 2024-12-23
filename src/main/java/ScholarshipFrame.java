@@ -3,14 +3,21 @@ import java.awt.*;
 
 public class ScholarshipFrame extends JFrame {
     private static final String FILE_PATH = "src/Scholarship.txt"; // 자동으로 불러올 파일 경로
+    private final ScholarshipCalculator calculator;
+    private final InputValidator validator;
+    private final ScholarshipRequirementsLoader requirementsLoader;
 
-    public ScholarshipFrame() {
+    public ScholarshipFrame(ScholarshipCalculator calculator, InputValidator validator, ScholarshipRequirementsLoader requirementsLoader) {
+        this.calculator = calculator;
+        this.validator = validator;
+        this.requirementsLoader = requirementsLoader;
+
         setTitle("장학금 찾기 프로그램");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 600);
 
         // 아이콘 설정
-        ImageIcon icon = new ImageIcon("src/main/resources/UniversityLogo.png"); // 아이콘 이미지 경로
+        ImageIcon icon = new ImageIcon("src/main/resources/UniversityLogo.png");
         setIconImage(icon.getImage()); // 프레임 아이콘 설정
 
         setLayout(new GridBagLayout());
@@ -29,8 +36,8 @@ public class ScholarshipFrame extends JFrame {
 
         // 버튼: 장학금 요건 불러오기
         JButton loadButton = new JButton("장학금 요건 불러오기");
-        loadButton.setBackground(new Color(73, 106, 159)); // RGB 값을 사용하여 배경색 설정
-        loadButton.setForeground(Color.WHITE); // 글자색을 하얀색으로 설정
+        loadButton.setBackground(new Color(73, 106, 159));
+        loadButton.setForeground(Color.WHITE);
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -90,8 +97,8 @@ public class ScholarshipFrame extends JFrame {
 
         // 버튼: 장학금 찾기
         JButton applyButton = new JButton("장학금 찾기");
-        applyButton.setBackground(new Color(73, 106, 159)); // RGB 값을 사용하여 배경색 설정
-        applyButton.setForeground(Color.WHITE); // 글자색을 하얀색으로 설정
+        applyButton.setBackground(new Color(73, 106, 159));
+        applyButton.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.gridwidth = 2;
@@ -108,9 +115,9 @@ public class ScholarshipFrame extends JFrame {
         add(resultScrollPane, gbc);
 
         // 프로그램 시작 시 자동으로 장학금 요건 불러오기
-        ScholarshipRequirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea);
+        requirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea);
 
-        loadButton.addActionListener(e -> ScholarshipRequirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea));
+        loadButton.addActionListener(e -> requirementsLoader.loadScholarshipRequirements(FILE_PATH, requirementsArea));
 
         applyButton.addActionListener(e -> {
             try {
@@ -121,18 +128,18 @@ public class ScholarshipFrame extends JFrame {
                 double gpa = Double.parseDouble(gpaField.getText());
 
                 // 입력값 검증
-                InputValidator.validateGrade(grade);
-                InputValidator.validateTotalStudents(totalStudents);
-                InputValidator.validateRank(rank, totalStudents);
-                InputValidator.validateCredits(creditsEarned);
-                InputValidator.validateGPA(gpa);
+                validator.validateGrade(grade);
+                validator.validateTotalStudents(totalStudents);
+                validator.validateRank(rank, totalStudents);
+                validator.validateCredits(creditsEarned);
+                validator.validateGPA(gpa);
 
                 // 장학금 자격 검증 및 장학금 계산
-                if (ScholarshipCalculator.isEligibleForScholarship(grade, (int) creditsEarned, gpa)) {
-                    double scholarshipAmount = ScholarshipCalculator.calculateScholarship(gpa, rank, totalStudents);
-                    String scholarshipType = ScholarshipCalculator.determineScholarshipType(gpa, rank, totalStudents);
+                if (calculator.isEligibleForScholarship(grade, (int) creditsEarned, gpa)) {
+                    double scholarshipAmount = calculator.calculateScholarship(gpa, rank, totalStudents);
+                    String scholarshipType = calculator.determineScholarshipType(gpa, rank, totalStudents);
                     resultArea.setText("선발되었습니다! 장학금 종류: " + scholarshipType +
-                            "\n지급액: " + ScholarshipCalculator.formatAmount(scholarshipAmount) + "원");
+                            "\n지급액: " + calculator.formatAmount(scholarshipAmount) + "원");
                 } else {
                     showErrorDialog("장학금 수혜 자격이 없습니다.");
                 }
