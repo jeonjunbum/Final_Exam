@@ -8,6 +8,9 @@ public class StartScreen extends JFrame {
         setSize(300, 300);  // 크기를 300x300으로 설정
         setLocationRelativeTo(null); // 화면 중앙에 위치
 
+        ImageIcon icon = new ImageIcon("src/main/resources/UniversityLogo.png"); // 아이콘 이미지 경로
+        setIconImage(icon.getImage()); // 프레임 아이콘 설정
+
         // 배경색을 하얀색으로 설정
         getContentPane().setBackground(Color.WHITE);
 
@@ -38,7 +41,7 @@ public class StartScreen extends JFrame {
 
         // 이미지 로드 및 크기 조정
         ImageIcon logoIcon = new ImageIcon("src/main/resources/UniversityLogo.png"); // 이미지 경로
-        Image logoImage = logoIcon.getImage().getScaledInstance(200, 182, Image.SCALE_SMOOTH); // 크기 조정
+        Image logoImage = logoIcon.getImage().getScaledInstance(200, 185, Image.SCALE_SMOOTH); // 크기 조정
         JLabel logoLabel = new JLabel(new ImageIcon(logoImage));
 
         // 로고를 그리드에 추가 (가운데 정렬)

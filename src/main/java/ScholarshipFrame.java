@@ -8,6 +8,11 @@ public class ScholarshipFrame extends JFrame {
         setTitle("장학금 찾기 프로그램");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 600);
+
+        // 아이콘 설정
+        ImageIcon icon = new ImageIcon("src/main/resources/UniversityLogo.png"); // 아이콘 이미지 경로
+        setIconImage(icon.getImage()); // 프레임 아이콘 설정
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
