@@ -11,7 +11,7 @@ import java.awt.*;
  * - 사용자 입력에 기반한 장학금 자격 검증
  * - 장학금 종류 및 지급액 계산
  *
- * @author [Your Name]
+ * @author [jeonjunbum]
  * @version 1.0
  */
 public class ScholarshipFrame extends JFrame {

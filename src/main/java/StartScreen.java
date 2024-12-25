@@ -6,7 +6,7 @@ import java.awt.*;
  * 이 클래스는 프로그램의 시작 화면을 구성하며,
  * 사용자에게 장학금 찾기 프로그램으로의 진입 버튼을 제공합니다.
  *
- * @author [Your Name]
+ * @author [jeonjunbum]
  * @version 1.0
  */
 public class StartScreen extends JFrame {
